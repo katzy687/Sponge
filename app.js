@@ -1,40 +1,17 @@
-var sampleHebrewWords = [{
-    Hebrew: "דג",
-    English: "fish",
-    point_value: 0
-  },
-  {
-    Hebrew: "כלב",
-    English: "dog",
-    point_value: 0
-  },
-  {
-    Hebrew: "חתול",
-    English: "cat",
-    point_value: 0
-  }
-]
+var express = require('express');
+var app = express();
+var mongoose = require('mongoose');
+var config = require('./config');
+var setupController = require ('./controllers/setupController');
 
+var port = process.env.PORT || 5000;
 
-$("#cycle button").click(function() {
+app.use(express.static(__dirname + '/public'));
 
-  // Reset the DOM on click
-  $(".card").remove();
+app.set('view engine', 'ejs');
 
-  // create divs and append to dom
-  $.each(sampleHebrewWords, function(index, value) {
+mongoose.connect(config.getDbConnectionString());
+setupController(app);
 
-    var heb = "<div class='card'>" + sampleHebrewWords[index].Hebrew + "</div>";
-    var en = "<div class='card'>" + sampleHebrewWords[index].English + "</div>";
-
-    $("#magic").append(heb).append(en);
-
-  });
-
-  // add unique IDs and fade in
-  $('.card').each(function(index) {
-    $(this).attr('id', 'card' + index);
-    $('#card' + (index)).delay(1000 * index).fadeIn().fadeOut();
-  });
-
-}); // end of on-click
+app.listen(port);
+console.log('you are now listening on port ' + port + ' homie');
